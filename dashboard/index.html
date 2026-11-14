@@ -3,63 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar — pre-token protocols, ranked by implied launch value</title>
+<title>Token Radar: pre-token protocols ranked by implied value</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
 <header class="top">
   <div class="brand">
-    <div class="logo">◉</div>
+    <span class="pulse" aria-hidden="true"></span>
     <div>
       <h1>TOKEN RADAR</h1>
-      <p class="tag">Every pre-token protocol in the snapshot, ranked by what its launch would be worth — and how to farm it.</p>
+      <p class="tag">Pre-token protocols, ranked by what a launch would be worth &mdash; and how to farm each one.</p>
     </div>
   </div>
-  <div class="meta" id="meta"></div>
+  <dl class="stats" id="stats"></dl>
 </header>
 
-<section class="how">
-  <div><span class="k">VALUE MODEL</span><p>Implied value = TVL × category multiple (median mcap/TVL of token-bearing protocols in the same category) × growth × age × chains. All inputs come from the snapshot itself — no hardcoded list of names.</p></div>
-  <div><span class="k">WHAT COUNTS</span><p>Only protocols that <b>record no token</b> and are not a wrapped, staked or bridged product of a token that trades. A protocol on this board may still have a token its record does not carry.</p></div>
-  <div><span class="k">READ THIS</span><p>An implied value is this entry's own claim, never make.fun's. It does not predict whether or when a token is issued.</p></div>
-</section>
-
-<section class="controls">
-  <input id="q" type="search" placeholder="Search a protocol…" autocomplete="off">
-  <select id="cat" aria-label="Category filter"></select>
-  <select id="chain" aria-label="Chain filter"></select>
-  <label class="chk"><input id="wl" type="checkbox"> Watchlist only</label>
-  <select id="sort" aria-label="Sort order">
-    <option value="v">Sort: implied value ↓</option>
-    <option value="t">Sort: TVL ↓</option>
-    <option value="g">Sort: 7-day change ↓</option>
-    <option value="a">Sort: longest running ↓</option>
-  </select>
-  <span class="count" id="count"></span>
-</section>
-
 <main>
-  <table id="board">
-    <thead><tr>
-      <th class="num">#</th><th>Protocol</th><th>Category</th><th>Chains</th>
-      <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
-      <th class="num">Implied value</th><th class="bar">Score</th>
-    </tr></thead>
-    <tbody id="rows"></tbody>
-  </table>
+  <section class="howto" aria-label="How to read this board">
+    <h2>How to read this board</h2>
+    <p>Implied value = TVL &times; category multiple &times; growth &times; age &times; chains. The multiple is the median
+    market-cap/TVL of token-bearing protocols in the same category (overall median 0.2138 when a category has too few).
+    Growth is the 7-day TVL change damped by half; age rewards protocols that ran longer with no token; each chain adds 2%.
+    A protocol <strong>records no token</strong> in the snapshot &mdash; that is not proof it has none. Rows marked
+    <span class="badge warn">TOKEN TRADES</span> were checked against the live market on 14 Nov 2026 and their token already
+    trades; they stay on the board because the watchlist requires them, but the launch thesis is dead for them. Two more rows
+    were left out entirely for the same reason &mdash; see the corrections note at the bottom. Rank is the model&rsquo;s claim, never a promise.</p>
+  </section>
 
-  <aside id="detail" class="detail" hidden>
-    <button id="close" class="close" type="button">✕ close</button>
-    <div id="detailBody"></div>
-  </aside>
+  <section class="controls" aria-label="Filter and sort">
+    <label>Search <input id="q" type="search" placeholder="Protocol name or slug&hellip;" autocomplete="off"></label>
+    <label>Category <select id="cat"><option value="">All categories</option></select></label>
+    <label>Token status
+      <select id="status">
+        <option value="">All rows</option>
+        <option value="no_token_recorded">No token recorded</option>
+        <option value="token_trades">Token already trades</option>
+      </select>
+    </label>
+    <label class="check"><input id="watch" type="checkbox"> Watchlist only</label>
+    <label>Sort by
+      <select id="sort">
+        <option value="rank">Rank (implied value)</option>
+        <option value="tvl">TVL, high to low</option>
+        <option value="growth">7-day change, high to low</option>
+        <option value="age">Oldest first</option>
+      </select>
+    </label>
+    <p class="count" id="count" aria-live="polite"></p>
+  </section>
+
+  <div class="layout">
+    <section class="boardwrap" aria-label="Ranked board">
+      <table id="board">
+        <thead>
+          <tr><th class="num">#</th><th>Protocol</th><th>Category</th><th class="num">TVL</th><th class="num">7d</th><th class="num">Implied value</th><th>Status</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+
+    <aside class="detail" id="detail" aria-label="Protocol detail">
+      <p class="empty">Select a protocol to see its model breakdown and farm plan.</p>
+    </aside>
+  </div>
+
+  <section class="corrections" aria-label="Data corrections">
+    <h2>Data corrections</h2>
+    <p>Two protocols were left out of this board because their token already trades. The snapshot records no token for them,
+    so this is a data gap, not a model choice.</p>
+    <ul id="excluded"></ul>
+  </section>
+
+  <footer class="method" aria-label="Method">
+    <h2>Method</h2>
+    <p>Snapshot: DefiLlama protocol data, 758 protocols at or above $5M TVL, fetched 14 Nov 2026. Watchlist: 40 protocols at or
+    above the $50M floor that record no token and are not a wrapped, staked or bridged product. Board: 196 rows &mdash; the whole
+    watchlist plus every other rankable protocol. Implied value is computed from the snapshot&rsquo;s own figures only; no protocol
+    name is special-cased in the model. Farm plans are built from each protocol&rsquo;s category, chains, TVL and age, with concrete
+    costs ($50&ndash;$200 of capital, a few dollars of gas) and a 4&ndash;8 week hold. Model version radar-2.</p>
+  </footer>
 </main>
-
-<footer>
-  <p>Data: DefiLlama protocol snapshot, fetched 2026-11-14. Floor for the house watchlist: $50,000,000 TVL. Board covers the whole 40-protocol watchlist plus every other pre-token protocol in the snapshot that passes the same exclusion rule.</p>
-  <p>Farm steps are general guidance for the protocol's category, personalised with its name and chains. Costs are suggestions in US dollars; always check the protocol's own terms before depositing.</p>
-</footer>
-
-<script src="data.js"></script>
+<script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
