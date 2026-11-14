@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — pre-token protocols, ranked by implied launch value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="logo">◉</div>
+    <div>
+      <h1>TOKEN RADAR</h1>
+      <p class="tag">Every pre-token protocol in the snapshot, ranked by what its launch would be worth — and how to farm it.</p>
+    </div>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section class="how">
+  <div><span class="k">VALUE MODEL</span><p>Implied value = TVL × category multiple (median mcap/TVL of token-bearing protocols in the same category) × growth × age × chains. All inputs come from the snapshot itself — no hardcoded list of names.</p></div>
+  <div><span class="k">WHAT COUNTS</span><p>Only protocols that <b>record no token</b> and are not a wrapped, staked or bridged product of a token that trades. A protocol on this board may still have a token its record does not carry.</p></div>
+  <div><span class="k">READ THIS</span><p>An implied value is this entry's own claim, never make.fun's. It does not predict whether or when a token is issued.</p></div>
+</section>
+
+<section class="controls">
+  <input id="q" type="search" placeholder="Search a protocol…" autocomplete="off">
+  <select id="cat" aria-label="Category filter"></select>
+  <select id="chain" aria-label="Chain filter"></select>
+  <label class="chk"><input id="wl" type="checkbox"> Watchlist only</label>
+  <select id="sort" aria-label="Sort order">
+    <option value="v">Sort: implied value ↓</option>
+    <option value="t">Sort: TVL ↓</option>
+    <option value="g">Sort: 7-day change ↓</option>
+    <option value="a">Sort: longest running ↓</option>
+  </select>
+  <span class="count" id="count"></span>
+</section>
+
+<main>
+  <table id="board">
+    <thead><tr>
+      <th class="num">#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+      <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
+      <th class="num">Implied value</th><th class="bar">Score</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <aside id="detail" class="detail" hidden>
+    <button id="close" class="close" type="button">✕ close</button>
+    <div id="detailBody"></div>
+  </aside>
+</main>
+
+<footer>
+  <p>Data: DefiLlama protocol snapshot, fetched 2026-11-14. Floor for the house watchlist: $50,000,000 TVL. Board covers the whole 40-protocol watchlist plus every other pre-token protocol in the snapshot that passes the same exclusion rule.</p>
+  <p>Farm steps are general guidance for the protocol's category, personalised with its name and chains. Costs are suggestions in US dollars; always check the protocol's own terms before depositing.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
